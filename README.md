@@ -30,7 +30,6 @@ And yes... I'm really happy and proud to have built this from scratch! 😊
 - ✅ Add or remove voters anytime  
 - ✅ Automatically find the closest guess to the result  
 - ✅ Simple and clean interface  
-- ✅ Mobile responsive  
 - ✅ Great for small contests and events!  
 
 ---
