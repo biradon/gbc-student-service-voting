@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Closest Vote Finder</title>
+  <title>GBC Student Service Guessing Game</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -53,17 +54,36 @@
     .actions {
       margin: 1rem 0;
     }
+
+    .action-button {
+        background-color: #0D92F4; /* Bootstrap blue */
+        color: white;
+        padding: 10px 20px;
+        margin: 8px 5px;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .action-button:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
   </style>
 </head>
 <body>
-  <h1>🗳️ George Brown College Student Service Center - Closest Vote Finder 🗳️</h1>
+  <h1>🗳️ GBC Student Service Center - Closest Guess Finder 🗳️</h1>
 
   <label for="userResult">👇 Enter the result 👇</label><br />
   <input type="number" id="userResult" placeholder="e.g., 1249" />
 
   <div class="actions">
-    <button onclick="findClosest()">Find Closest Vote</button>
-    <button onclick="addVoter()">Add Voter</button>
+    <button class="action-button" onclick="findClosest()">Find Closest Guess</button>
+    <button class="action-button" onclick="addVoter()">Add Guesser</button>
   </div>
 
   <div id="resultDisplay"></div>
@@ -72,8 +92,8 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th>Vote</th>
-        <th>Action</th>
+        <th>Guess</th>
+        <th>Remove</th>
       </tr>
     </thead>
     <tbody>
