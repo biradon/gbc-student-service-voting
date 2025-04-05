@@ -99,62 +99,75 @@
   </table>
 
   <script>
-    function findClosest() {
-      const result = parseInt(document.getElementById("userResult").value);
-      if (isNaN(result)) {
-        document.getElementById("resultDisplay").innerText = "Please enter a valid number.";
-        return;
-      }
+function findClosest() {
+  const result = parseInt(document.getElementById("userResult").value);
+  if (isNaN(result)) {
+    document.getElementById("resultDisplay").innerText = "Please enter a valid number.";
+    return;
+  }
 
-      const table = document.getElementById("votesTable").getElementsByTagName("tbody")[0];
-      const rows = table.getElementsByTagName("tr");
+  const table = document.getElementById("votesTable").getElementsByTagName("tbody")[0];
+  const rows = table.getElementsByTagName("tr");
 
-      const nameToVote = new Map();
-      const votes = [];
+  const nameToVote = new Map();
+  const votes = [];
 
-      for (let row of rows) {
-        const name = row.cells[0].querySelector("input").value.trim();
-        const vote = parseInt(row.cells[1].querySelector("input").value);
-        if (name && !isNaN(vote)) {
-          nameToVote.set(name, vote);
-          votes.push(vote);
-        }
-      }
-
-      if (votes.length === 0) {
-        document.getElementById("resultDisplay").innerText = "Please enter valid votes.";
-        return;
-      }
-
-      votes.sort((a, b) => a - b);
-
-      let left = 0, right = votes.length - 1, mid = 0;
-      while (left <= right) {
-        mid = Math.floor((left + right) / 2);
-        if (votes[mid] > result) {
-          right = mid - 1;
-        } else if (votes[mid] < result) {
-          left = mid + 1;
-        } else {
-          break;
-        }
-      }
-
-      let candidates = [votes[mid]];
-      if (mid > 0) candidates.push(votes[mid - 1]);
-      if (mid < votes.length - 1) candidates.push(votes[mid + 1]);
-
-      let closest = candidates.reduce((prev, curr) =>
-        Math.abs(curr - result) < Math.abs(prev - result) ? curr : prev
-      );
-
-      const matched = Array.from(nameToVote.entries())
-        .filter(([name, vote]) => vote === closest)
-        .map(([name]) => name);
-
-      document.getElementById("resultDisplay").innerText =
-        `Closest vote to ${result} is ${closest}, by ${matched.join(", ")}`;
+  for (let row of rows) {
+    const name = row.cells[0].querySelector("input").value.trim();
+    const vote = parseInt(row.cells[1].querySelector("input").value);
+    if (name && !isNaN(vote)) {
+      nameToVote.set(name, vote);
+      votes.push(vote);
     }
+  }
+
+  if (votes.length === 0) {
+    document.getElementById("resultDisplay").innerText = "Please enter valid votes.";
+    return;
+  }
+
+  votes.sort((a, b) => a - b);
+
+  // Binary search to find the index closest to result
+  let left = 0, right = votes.length - 1, mid = 0;
+  let closestIndex = 0;
+
+  while (left <= right) {
+    mid = Math.floor((left + right) / 2);
+    if (votes[mid] === result) {
+      closestIndex = mid;
+      break;
+    } else if (votes[mid] < result) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+
+    if (
+      Math.abs(votes[mid] - result) < Math.abs(votes[closestIndex] - result)
+    ) {
+      closestIndex = mid;
+    }
+  }
+
+  // Find minimum absolute difference
+  const closestDiff = Math.abs(votes[closestIndex] - result);
+
+  // Find all names whose vote is equally close
+  const matched = Array.from(nameToVote.entries())
+    .filter(([_, vote]) => Math.abs(vote - result) === closestDiff)
+    .map(([name]) => name);
+
+  // Find the guess value(s)
+  const guessValues = Array.from(nameToVote.values()).filter(
+    vote => Math.abs(vote - result) === closestDiff
+  );
+  const uniqueGuesses = [...new Set(guessValues)];
+
+  document.getElementById("resultDisplay").innerText =
+    `Closest vote to ${result} is ${uniqueGuesses.join(" or ")}, by ${matched.join(", ")}`;
+}
+
 
     function addVoter() {
       const tableBody = document.getElementById("votesTable").getElementsByTagName("tbody")[0];
